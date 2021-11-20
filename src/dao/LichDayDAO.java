@@ -36,8 +36,9 @@ public class LichDayDAO extends DAO {
 				kh.setMoTa(rs.getString("MoTa"));
 				kh.setThoiGianBatDau(formatter.format(rs.getDate("ThoiGianBatDau")));
 				kh.setThoiGianKetThuc(formatter.format(rs.getDate("ThoiGianKetThuc")));
-				
-				listLichDay.add(kh);
+				LichDay ld = new LichDay();
+				ld.setKhoaHoc(kh);
+				listLichDay.add(ld);
 			}
 			return listLichDay;
 			
