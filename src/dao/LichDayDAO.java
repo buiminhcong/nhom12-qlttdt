@@ -5,8 +5,10 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import model.GioDay;
 import model.KhoaHoc;
 import model.LichDay;
+import model.PhongHoc;
 import model.ThuDay;
 
 public class LichDayDAO extends DAO {
@@ -80,5 +82,56 @@ public class LichDayDAO extends DAO {
 		}
 		
 		return false;
+	}
+	
+	public ArrayList<LichDay> getLichDayTheoKhoaHoc(int idKhoaHoc) {
+		ArrayList<LichDay>list = new ArrayList<LichDay>();
+		String sql = "select lichday.id, khoahoc.ten as tenkh, gioday.ten as tengd, thuday.ten as tentd, phonghoc.ten as tenphong\n"
+				+ "from lichday\n"
+				+ "Inner Join khoahoc\n"
+				+ "on khoahoc.id = lichday.khoahocid\n"
+				+ "Inner Join gioday\n"
+				+ "on lichday.giodayid = gioday.id\n"
+				+ "Inner Join thuday\n"
+				+ "on lichday.thudayid = thuday.id\n"
+				+ "Inner Join phonghoc\n"
+				+ "on phonghoc.id = lichday.phonghocid\n"
+				+ "where khoahocid = ?;";
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, idKhoaHoc);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				int lichDayId = rs.getInt(1);
+				String tenKH = rs.getString(2);
+				String tenGD = rs.getString(3);
+				String tenTD = rs.getString(4);
+				String tenPhong = rs.getString(5);
+				
+				KhoaHoc kh = new KhoaHoc();
+				kh.setTen(tenKH);
+			
+				ThuDay td = new ThuDay();
+				td.setTen(tenTD);
+				
+				GioDay gd = new GioDay();
+				gd.setTen(tenGD);
+				
+				PhongHoc ph = new PhongHoc();
+				ph.setTen(tenPhong);
+				
+				LichDay lichDay = new LichDay();
+				lichDay.setId(lichDayId);
+				lichDay.setKhoaHoc(kh);
+				lichDay.setGioDay(gd);
+				lichDay.setThuDay(td);
+				lichDay.setPhongHoc(ph);
+				list.add(lichDay);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

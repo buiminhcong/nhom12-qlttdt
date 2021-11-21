@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
@@ -55,8 +56,50 @@ public class MonHoc_KhoaHocDAO extends DAO{
 		return null;
 	}
 	
-
-	
-	
-	
+	public ArrayList<MonHoc_KhoaHoc> getDSKhoaHocMonHocByTime(String t1, String t2) {
+		ArrayList<MonHoc_KhoaHoc>list = new ArrayList<MonHoc_KhoaHoc>();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String sql = "SELECT khoahocid, khoahoc.ten, khoahoc.mota, khoahoc.thoigianbatdau, khoahoc.thoigianketthuc, khoahoc.hocphi, monhoc.tenmon\n"
+				+ "FROM monhoc_khoahoc\n"
+				+ "INNER JOIN khoahoc\n"
+				+ "ON khoahoc.id = monhoc_khoahoc.khoahocid\n"
+				+ "INNER JOIN monhoc\n"
+				+ "ON monhoc.id = monhoc_khoahoc.monhocid\n"
+				+ "WHERE khoahoc.thoigianbatdau >= ? and khoahoc.thoigianketthuc <= ?";
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setString(1, t1);
+			ps.setString(2, t2);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				int khoaHocId = rs.getInt("khoahocid");
+				String tenKhoaHoc = rs.getString("ten");
+				String moTa = rs.getString("mota");
+				Date ngayBatDau = rs.getDate("thoigianbatdau");
+				Date ngayKetThuc = rs.getDate("thoigianketthuc");
+				String hocPhi = rs.getString("hocphi");
+				String tenMon = rs.getString("tenmon");
+				
+				KhoaHoc kh = new KhoaHoc();
+				kh.setID(khoaHocId);
+				kh.setMoTa(moTa);
+				kh.setTen(tenKhoaHoc);
+				kh.setThoiGianBatDau(sdf.format(ngayBatDau));
+				kh.setThoiGianKetThuc(sdf.format(ngayKetThuc));
+				kh.setHocPhi(hocPhi);
+				
+				MonHoc mh = new MonHoc();
+				mh.setTenMon(tenMon);
+				
+				MonHoc_KhoaHoc mh_kh_new = new MonHoc_KhoaHoc(mh, kh);
+				list.add(mh_kh_new);
+			}
+			ps.close();
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
 }

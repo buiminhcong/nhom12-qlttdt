@@ -29,7 +29,6 @@
 		} else if (kq == true && tv.getPhanQuyen().equals("HV")) {
 			session.setAttribute("hocvien", tv);
 			response.sendRedirect("hoc-vien/gdChinhHV.jsp");
-			
 		} else if (kq == true && tv.getPhanQuyen().equals("GV")) {
 			session.setAttribute("giangvien", tv);
 			response.sendRedirect("giang-vien/gdChinhGV.jsp");
@@ -38,7 +37,7 @@
 			response.sendRedirect("gdChinhNV.jsp");
 		}else if (kq == true && tv.getPhanQuyen().equals("QL")) {
 			session.setAttribute("quanli", tv);
-			response.sendRedirect("gdChinhGV.jsp");
+			response.sendRedirect("quan-ly/gdChinhQL.jsp");
 		}else {
 			session.setAttribute("sai", "Vui long xem lai thong tin dang nhap!");
 			session.setAttribute("username", username);
